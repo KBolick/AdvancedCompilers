@@ -1,0 +1,9 @@
+Kevin Bolick
+u0634160
+Advanced Compilers CS 6475
+Assignment 0
+10/1/2013
+
+This is a compiler written from a rich subset of Scheme into pure lambda calculus.
+The lambda calculus uses Church encodings to represent numbers. The output runs
+(albeit slowly) in Racket.

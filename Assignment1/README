@@ -1,0 +1,47 @@
+Kevin Bolick
+u0634160
+Advanced Compilers CS 6475
+Assignment 1
+10/28/2013
+
+This is a non-blocking lexer that takes in a string in SExp form and converts it into a list of tokens using regex derivatives.
+
+The RegularLanguage.scala file describes all the regular operations available to us (Kleene star, option, concatenation, etc). We couldn't use the Java regex library, because we're computing the derivative of regular expressions, so we need access to their structure.
+
+The LiveStream.scala file provides the input to a live stream that allows the lexer to be non-blocking. This stream will lex input when it has input, and it can detect when it is plugged (when input is not available). The tail of this stream can grow over time, and it can pick up lexing again if the tail grows after it has been plugged.
+
+The Token.scala file descibes the output of the lexer. The lexer will output a live stream of tokens. A token can be thought of as the terminal of a context-free grammar.
+
+The Lexer.scala file is the lexing toolkit itself. It describes all the rules for lexing regex derivatives and uses the live stream to suspend itself and yield control when it doesn't have input. The lexer has different states that it keeps track of and operates in. Each state has a list of regular expressions that can be matched with the input, and rules that correspond with those expressions. The lexer will look for the longest matching rule to execute on. When the lexer matches on an expression, it can transition states and/or emit token(s) according to the specified rules.
+
+The SXLexer.scala file contains all of the specific states and rules for lexing SExpressions.
+
+Comments begin with a semicolon and end in a newline or carriage return. They are ignored.
+A character sequence starting with #! and ending with !# are also ignored as a comment. These hash-bang comments nest properly.
+Whitespace (newlines, carriage returns, spaces, and tabs) is ignored.
+A left parenthesis emits the (left-parenthesis) token
+A right parenthesis emits the (right-parenthesis) token
+A left bracket emits the (left-bracket) token
+A right bracket emits the (right-bracket) token
+A backtick quote emits the (backtick) token
+A single quote emits the (tick) token
+A comma emits the (comma) token
+A comma followed by @ emits the (comma-unsplice) token
+Integers (number characters that may be following a '-') emit a (integer *value*) token
+A character (#\char-name) emits a (char char-name) token. Char-name may be any character allowed in integers and symbols, ans uses the following mapping otherwise:
+  space - space
+  newline - newline
+  tab - tab
+  ( - left-parenthesis
+  ) - right-parenthesis
+  [ - left-bracket
+  ] - right-bracket
+  ` - backtick
+  ' - tick
+  " - doublequote
+  , - comma
+A string starts and ends with a double quote. The double quote character and the escape character can be escaped with the escape character (\). \n is interpreted as a newline character. The string emits a (text (char-list)) token, where char-list is the list of character tokens that make up the string.
+A boolean value (#t or #f) emits the (boolean bool-value) token
+A symbol is any sequence of characters that don't qualify as anything above. Symbols emit a (symbol (char-list)) token.
+
+The char '#\ ' and '#\space' both emit a (char space) token. The same scenario for '#\newline' and '#\tab' and their counterparts.
